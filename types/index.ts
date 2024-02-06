@@ -1,3 +1,5 @@
+import { SearchGameResult } from "@/lib/searchBoardGames";
+
 // ====== USER PARAMS
 export type CreateUserParams = {
 	clerkId: string;
@@ -17,7 +19,7 @@ export type UpdateUserParams = {
 
 // ====== BOARD GAME SUGGESTION PARAMS
 export type BoardGameSuggestionParams = {
-	bggId: number;
+	id: number;
 	title: string;
 	imageUrl: string;
 	complexityScore: number;
@@ -41,13 +43,11 @@ export type CreateEventParams = {
 		description: string;
 		location: string;
 		imageUrl: string;
-		startDateTime: Date;
-		endDateTime: Date;
+		dateTime: Date;
 		categoryId: string;
-		eventType: string;
-		boardGamesSuggestions: BoardGameSuggestionParams[];
+		seats: number;
+		boardGamesSuggestions: SearchGameResult[];
 		attendees?: UserRef[]; // Optional at creation, might not have attendees yet
-		url: string;
 	};
 	path: string;
 };
@@ -60,11 +60,10 @@ export type UpdateEventParams = {
 		imageUrl?: string; // Optional for updates
 		description?: string; // Optional for updates
 		location?: string; // Optional for updates
-		startDateTime?: Date; // Optional for updates
-		endDateTime?: Date; // Optional for updates
+		dateTime?: Date; // Optional for updates
+		seats?: number; // Optional for updates
 		categoryId?: string; // Optional for updates
-		eventType?: string; // Optional for updates
-		boardGamesSuggestions?: BoardGameSuggestionParams[]; // Optional for updates
+		boardGamesSuggestions?: SearchGameResult[]; // Optional for updates
 		attendees?: UserRef[]; // For adding or updating attendees
 		url?: string; // Optional for updates
 	};

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { BoardGameCombobox } from "@/components/shared/BoardGameCombobox";
 
 export default function Home() {
 	return (
