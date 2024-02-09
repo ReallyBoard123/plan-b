@@ -10,6 +10,16 @@ const attendeeSchema = z.object({
 	userId: z.string().min(1, "User ID is required"),
 	firstName: z.string().optional(),
 	lastName: z.string().optional(),
+	guests: z.number().min(0).max(1, "ask your friends to signup!").optional(),
+	boardGames: z
+		.array(searchGameResultSchema)
+		.max(2, "keep some space to carry snacks?")
+		.optional(),
+});
+
+export const participationFormSchema = z.object({
+	guestsFromAttendee: z.number().optional(),
+	boardGames: z.array(searchGameResultSchema).optional(),
 });
 
 export const eventFormSchema = z.object({
@@ -27,9 +37,15 @@ export const eventFormSchema = z.object({
 		.number()
 		.min(1, "Seats must be at least 1")
 		.max(99, "I don't think you have more than 99 seats..."),
-	dateTime: z.date(),
+	guestAttendeesCount: z
+		.number()
+		.min(0, "need some friends, huh?")
+		.max(4, "Too many friends, why invite others!"),
+	guestsFromAttendee: z.number().optional(),
+	boardGamesSuggestionsByAttendee: z.array(searchGameResultSchema).optional(),
+	dateTime: z.date().min(new Date(), "Date must be in the future"),
 	categoryId: z.string(),
 	boardGamesSuggestions: z.array(searchGameResultSchema),
 	attendees: z.array(attendeeSchema).optional(),
-	url: z.string().url().optional(), // Making it optional as not all events may have an external URL
+	url: z.string().url().optional(),
 });

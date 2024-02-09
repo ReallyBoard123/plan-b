@@ -203,3 +203,29 @@ export async function getRelatedEventsByCategory({
 		handleError(error);
 	}
 }
+
+// UPDATE PARTICIPATION
+export async function updateEventParticipation({
+	eventId,
+	updatePayload,
+}: {
+	eventId: string;
+	updatePayload: any;
+}) {
+	try {
+		await connectToDatabase();
+
+		const eventToUpdate = await Event.findById(eventId);
+		if (!eventToUpdate) {
+			throw new Error("Event not found");
+		}
+
+		const updatedEvent = await Event.findByIdAndUpdate(eventId, updatePayload, {
+			new: true,
+		});
+
+		return JSON.parse(JSON.stringify(updatedEvent));
+	} catch (error) {
+		handleError(error);
+	}
+}

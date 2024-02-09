@@ -21,6 +21,9 @@ export const eventDefaultValues = {
 	seats: undefined,
 	dateTime: new Date(),
 	categoryId: "",
+	guestAttendeesCount: 0,
 	boardGamesSuggestions: [],
+	guestsFromAttendee: 0,
+	boardGamesSuggestionsByAttendee: [],
 	attendees: [],
 };

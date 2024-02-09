@@ -159,7 +159,25 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 							<FormItem className="w-full">
 								<FormControl>
 									<Input
-										placeholder="Max seats"
+										placeholder="Max seats (including guests)"
+										{...field}
+										className="input-field"
+										type="number"
+										onChange={(e) => field.onChange(Number(e.target.value))}
+									/>
+								</FormControl>
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
+					<FormField
+						control={form.control}
+						name="guestAttendeesCount"
+						render={({ field }) => (
+							<FormItem className="w-full">
+								<FormControl>
+									<Input
+										placeholder="Number of guest attendees"
 										{...field}
 										className="input-field"
 										type="number"

@@ -41,12 +41,14 @@ export function BoardGameCombobox({
 
 	const handleUnselect = (game: SearchGameResult) => {
 		const updatedGames = selectedGames.filter((g) => g.id !== game.id);
+		console.log("Updated Games After Unselect:", updatedGames);
 		onGameSelect(updatedGames);
 	};
 
 	const handleSelect = (game: SearchGameResult) => {
 		if (!selectedGames.some((selectedGame) => selectedGame.id === game.id)) {
 			const updatedGames = [...selectedGames, game];
+			console.log("Selected Games:", updatedGames);
 			onGameSelect(updatedGames);
 			setInputValue("");
 			setOpen(false);

@@ -24,7 +24,11 @@ export type BoardGameSuggestionParams = {
 	imageUrl: string;
 	complexityScore: number;
 	rating: number;
-	duration: number;
+	duration: number | null;
+	minPlayers?: number | null;
+	maxPlayers?: number | null;
+	yearPublished?: number | null;
+	description: string;
 	bggLink: string;
 };
 
@@ -45,6 +49,9 @@ export type CreateEventParams = {
 		imageUrl: string;
 		dateTime: Date;
 		categoryId: string;
+		guestAttendeesCount: number;
+		guestsFromAttendee?: number;
+		boardGamesSuggestionsByAttendee?: SearchGameResult[];
 		seats: number;
 		boardGamesSuggestions: SearchGameResult[];
 		attendees?: UserRef[]; // Optional at creation, might not have attendees yet
@@ -62,7 +69,10 @@ export type UpdateEventParams = {
 		location?: string; // Optional for updates
 		dateTime?: Date; // Optional for updates
 		seats?: number; // Optional for updates
+		guestAttendeesCount?: number; // Optional for updates
 		categoryId?: string; // Optional for updates
+		guestsFromAttendee?: number;
+		boardGamesSuggestionsByAttendee?: SearchGameResult[]; // Optional for updates
 		boardGamesSuggestions?: SearchGameResult[]; // Optional for updates
 		attendees?: UserRef[]; // For adding or updating attendees
 		url?: string; // Optional for updates
@@ -115,4 +125,25 @@ export type RemoveUrlQueryParams = {
 export type SearchParamProps = {
 	params: { id: string };
 	searchParams: { [key: string]: string | string[] | undefined };
+};
+
+// ====== PARTICIPATION PARAMS
+export type CreateParticipationParams = {
+	eventId: string;
+	userId: string;
+	guests?: number;
+	boardGames?: SearchGameResult[];
+	confirmed: boolean;
+	createdAt: Date;
+};
+
+export type GetParticipationsByEventParams = {
+	eventId: string;
+	searchString?: string;
+};
+
+export type GetParticipationsByUserParams = {
+	userId: string;
+	limit?: number;
+	page?: number;
 };

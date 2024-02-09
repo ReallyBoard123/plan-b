@@ -80,6 +80,23 @@ export const fetchBoardGameDetails = async (
 		const game = result.items.item;
 		if (!game) return null;
 
+		const description = game.description
+			? game.description[0].value
+			: "No description available.";
+
+		const yearPublished = game.yearpublished?.value
+			? parseInt(game.yearpublished.value)
+			: null;
+		const minPlayers = game.minplayers?.value
+			? parseInt(game.minplayers.value)
+			: null;
+		const maxPlayers = game.maxplayers?.value
+			? parseInt(game.maxplayers.value)
+			: null;
+		const playTime = game.playingtime?.value
+			? parseInt(game.playingtime.value)
+			: null;
+
 		return {
 			id: parseInt(game.id),
 			title: game.name?.[0]?.value ?? "Unknown",
@@ -88,7 +105,11 @@ export const fetchBoardGameDetails = async (
 				game.statistics?.ratings?.averageweight?.value ?? "0"
 			),
 			rating: parseFloat(game.statistics?.ratings?.average?.value ?? "0"),
-			duration: parseInt(game.playingtime?.value ?? "0"),
+			duration: playTime,
+			minPlayers: minPlayers,
+			maxPlayers: maxPlayers,
+			yearPublished: yearPublished,
+			description: description,
 			bggLink: `https://boardgamegeek.com/boardgame/${gameId}`,
 		};
 	} catch (error) {
