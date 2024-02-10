@@ -127,22 +127,19 @@ export type SearchParamProps = {
 	searchParams: { [key: string]: string | string[] | undefined };
 };
 
-// ====== PARTICIPATION PARAMS
-export type CreateParticipationParams = {
+// ====== ATTENDEE PARAMS
+export type CreateOrUpdateAttendeeParams = {
 	eventId: string;
 	userId: string;
-	guests?: number;
-	boardGames?: SearchGameResult[];
-	confirmed: boolean;
-	createdAt: Date;
+	guests: number;
+	boardGames: SearchGameResult[];
 };
 
-export type GetParticipationsByEventParams = {
+export type GetAttendeesByEventParams = {
 	eventId: string;
-	searchString?: string;
 };
 
-export type GetParticipationsByUserParams = {
+export type GetAttendeesByUserParams = {
 	userId: string;
 	limit?: number;
 	page?: number;

@@ -1,7 +1,7 @@
 import Collection from "@/components/shared/Collection";
 import { Button } from "@/components/ui/button";
 import { getEventsByUser } from "@/lib/actions/event.actions";
-import { getParticipationsByUser } from "@/lib/actions/participation.action";
+import { getParticipationsByUser } from "@/lib/actions/attendee.actions";
 import { IEvent } from "@/lib/database/models/event.model";
 import { SearchParamProps } from "@/types";
 import { auth } from "@clerk/nextjs";

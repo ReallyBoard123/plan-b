@@ -17,8 +17,8 @@ const attendeeSchema = z.object({
 		.optional(),
 });
 
-export const participationFormSchema = z.object({
-	guestsFromAttendee: z.number().optional(),
+export const attendeeFormSchema = z.object({
+	guests: z.number().min(0),
 	boardGames: z.array(searchGameResultSchema).optional(),
 });
 

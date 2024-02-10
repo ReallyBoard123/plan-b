@@ -6,8 +6,7 @@ import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-
-import ParticipationForm from "./ParticipationForm";
+import AttendeeForm from "./AttendeeForm";
 
 const AttendButton = ({ event }: { event: IEvent }) => {
 	const { user } = useUser();
@@ -30,11 +29,7 @@ const AttendButton = ({ event }: { event: IEvent }) => {
 						</Button>
 					</SignedOut>
 					<SignedIn>
-						<ParticipationForm
-							eventId={event._id}
-							userId={userId}
-							router={router}
-						/>
+						<AttendeeForm eventId={event._id} userId={userId} type={"Add"} />
 					</SignedIn>
 				</>
 			)}

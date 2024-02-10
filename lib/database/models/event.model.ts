@@ -30,7 +30,7 @@ const eventSchema = new Schema<IEvent>({
 	imageUrl: { type: String, required: true },
 	dateTime: { type: Date, default: Date.now },
 	boardGamesSuggestions: [searchGameResultSchema],
-	attendees: [attendeeSchema],
+	attendees: [{ type: Schema.Types.ObjectId, ref: "Attendee" }],
 	attendeeCount: { type: Number, default: 0 },
 	guestAttendeesCount: { type: Number, default: 0 },
 	guestsFromAttendee: { type: Number, default: 0 },
