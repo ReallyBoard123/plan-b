@@ -2,6 +2,7 @@ import {
 	getEventById,
 	getRelatedEventsByCategory,
 } from "@/lib/actions/event.actions";
+import { fetchAttendeeDetails } from "@/lib/actions/attendee.actions";
 import { HiOutlineCalendar } from "react-icons/hi";
 import { GoPeople } from "react-icons/go";
 import { LuMapPin } from "react-icons/lu";
@@ -11,11 +12,16 @@ import Image from "next/image";
 import { GameCard } from "@/components/shared/GameCard";
 import Collection from "@/components/shared/Collection";
 import AttendButton from "@/components/shared/AttendButton";
+import { auth } from "@clerk/nextjs";
 
 const EventDetails = async ({
 	params: { id },
 	searchParams,
 }: SearchParamProps) => {
+	const { sessionClaims } = auth();
+
+	const userId = sessionClaims?.userId as string;
+
 	const event = await getEventById(id);
 
 	const boardGameIds = event.boardGamesSuggestions.map(
@@ -27,6 +33,25 @@ const EventDetails = async ({
 		eventId: event._id,
 		page: searchParams.page as string,
 	});
+
+	console.log("page event id", id);
+	console.log("userId", userId);
+
+	const isOrganizer = event.organizer._id === userId;
+	console.log("isOrganizer", isOrganizer);
+
+	const isAttending = event.attendees.includes(userId);
+	console.log("isAttending", isAttending);
+
+	console.log(
+		"total guest count",
+		event.guestAttendeesCount + event.attendeeCount + event.guestsFromAttendee
+	);
+	let attendeeDetails = null;
+
+	if (isAttending) {
+		attendeeDetails = await fetchAttendeeDetails(event._id, userId);
+	}
 
 	return (
 		<>
@@ -62,10 +87,12 @@ const EventDetails = async ({
 							<div className="p-regular-20 flex items-center gap-3">
 								<GoPeople className="w-6 h-6" />
 								<p className="p-medium-16 lg:p-regular-20">
-									{event.attendeeCount + event.guestAttendeesCount}/
-									{event.seats}
+									{event.attendeeCount +
+										event.guestAttendeesCount +
+										event.guestsFromAttendee}
+									/{event.seats}
 								</p>
-								<AttendButton event={event} />
+								<AttendButton event={event} attendeeDetails={attendeeDetails} />
 							</div>
 							<div className="flex gap-2 md:gap-3">
 								<HiOutlineCalendar className="w-6 h-6" />

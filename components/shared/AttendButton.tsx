@@ -8,12 +8,34 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import AttendeeForm from "./AttendeeForm";
 
-const AttendButton = ({ event }: { event: IEvent }) => {
+interface AttendeeDetails {
+	_id: string;
+	guests: number;
+	boardGames: Array<{
+		id: string;
+		name: string;
+	}>;
+}
+
+interface AttendButtonProps {
+	event: IEvent;
+	attendeeDetails?: AttendeeDetails;
+}
+
+const AttendButton = ({
+	event,
+	attendeeDetails,
+}: {
+	event: IEvent;
+	attendeeDetails?: AttendeeDetails;
+}) => {
 	const { user } = useUser();
 	const userId = user?.publicMetadata.userId as string;
 	const router = useRouter();
 
 	const hasEventFinished = new Date(event.dateTime) < new Date();
+
+	const attendeeId = userId;
 
 	return (
 		<div className="flex items-center gap-3">
@@ -29,7 +51,12 @@ const AttendButton = ({ event }: { event: IEvent }) => {
 						</Button>
 					</SignedOut>
 					<SignedIn>
-						<AttendeeForm eventId={event._id} userId={userId} type={"Add"} />
+						<AttendeeForm
+							eventId={event._id}
+							userId={userId}
+							type={attendeeDetails ? "Update" : "Add"}
+							attendeeDetails={attendeeDetails}
+						/>
 					</SignedIn>
 				</>
 			)}

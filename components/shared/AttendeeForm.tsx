@@ -22,9 +22,10 @@ import {
 } from "@/components/ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { attendeeFormSchema } from "@/lib/validator";
 import {
+	BoardGameSuggestion,
 	addAttendeeToEvent,
 	updateAttendeeDetails,
 } from "@/lib/actions/attendee.actions";
@@ -34,61 +35,94 @@ const attendeeDefaultValues = {
 	boardGames: [],
 };
 
+interface AttendeeFormValues {
+	guests: number;
+	boardGames: BoardGameSuggestion[];
+}
+
+interface AttendeeDetails extends AttendeeFormValues {
+	_id: string;
+}
+
+const schema = z.object({
+	guests: z.number(),
+	boardGames: z.array(
+		z.object({
+			id: z.string(),
+			name: z.string(),
+		})
+	),
+});
+
 type AttendeeFormProps = {
 	eventId: string;
 	userId: string;
 	type: "Add" | "Update";
-	attendeeId?: string;
+	attendeeDetails?: {
+		_id: string;
+		guests: number;
+		boardGames: Array<{ id: string; name: string }>;
+	};
 };
 
 const AttendeeForm = ({
 	eventId,
 	userId,
 	type,
-	attendeeId,
+	attendeeDetails,
 }: AttendeeFormProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 
-	const form = useForm<z.infer<typeof attendeeFormSchema>>({
-		resolver: zodResolver(attendeeFormSchema),
-		defaultValues: attendeeDefaultValues,
+	const form = useForm({
+		resolver: zodResolver(schema),
+		defaultValues: {
+			guests: attendeeDetails?.guests ?? 0,
+			boardGames: attendeeDetails?.boardGames ?? [],
+		},
 	});
 
-	async function onSubmit(values: z.infer<typeof attendeeFormSchema>) {
+	const onSubmit = async (values: AttendeeFormValues) => {
 		if (type === "Add") {
-			try {
-				const response = await addAttendeeToEvent({
-					eventId,
-					userId,
-					boardGames: values.boardGames || [],
-					...values,
-				});
-				console.log(response);
+			const newAttendee = await addAttendeeToEvent({
+				eventId,
+				userId,
+				guests: values.guests,
+				boardGames: values.boardGames,
+			});
+			if (newAttendee) {
 				form.reset();
-				setIsOpen(false);
-			} catch (error) {
-				console.error(error);
+				window.location.reload();
 			}
-		} else if (type === "Update" && attendeeId) {
-			try {
-				const response = await updateAttendeeDetails({
-					attendeeId,
-					boardGames: values.boardGames || [],
-					...values,
-				});
-				console.log(response); // Handle response
+		} else if (type === "Update" && attendeeDetails?._id) {
+			const updateAttendee = await updateAttendeeDetails({
+				attendeeId: attendeeDetails._id,
+				guests: values.guests,
+				boardGames: values.boardGames,
+			});
+			if (updateAttendee) {
 				form.reset();
-				setIsOpen(false); // Close dialog on success
-			} catch (error) {
-				console.error(error);
+				window.location.reload();
 			}
 		}
-	}
+
+		setIsOpen(false);
+	};
+
+	useEffect(() => {
+		if (attendeeDetails && type === "Update") {
+			form.reset({
+				guests: attendeeDetails.guests,
+				boardGames: attendeeDetails.boardGames,
+			});
+		}
+	}, [attendeeDetails, form.reset, type]);
 
 	return (
 		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button className="button">Attend Event</Button>
+				<Button className="button">
+					{type === "Add" ? "Attend Event" : "Update Attendance"}
+				</Button>
 			</DialogTrigger>
 			<DialogContent className="sm:max-w-[425px] bg-white">
 				<DialogHeader>

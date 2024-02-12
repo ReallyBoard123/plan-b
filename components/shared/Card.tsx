@@ -45,7 +45,10 @@ const Card = ({ event, isOrganiser, isAttendee }: CardProps) => {
 						{event.category.name}
 					</p>
 					<span className="p-semibold-14 w-min rounded-full bg-green-100 px-4 py-1 text-green-60">
-						{event.attendeeCount + event.guestAttendeesCount}/{event.seats}
+						{event.attendeeCount +
+							event.guestAttendeesCount +
+							event.guestsFromAttendee}
+						/{event.seats}
 					</span>
 				</div>
 
