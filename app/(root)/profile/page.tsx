@@ -90,7 +90,7 @@
 import React from "react";
 
 const ProfilePage = () => {
-	return <div>ProfilePage</div>;
+	return <div>ProfilePage will be here soon!</div>;
 };
 
 export default ProfilePage;
