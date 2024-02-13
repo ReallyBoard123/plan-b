@@ -69,7 +69,7 @@ const Card = ({ event, isOrganiser, isAttendee }: CardProps) => {
 
 					{isAttendee && (
 						<Link
-							href={`/orders?eventId=${event._id}`}
+							href={`/events/${event._id}`}
 							className="flex gap-2 items-center"
 						>
 							<p className="text-primary-500">Event Details</p>

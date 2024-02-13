@@ -24,9 +24,19 @@ const EventDetails = async ({
 
 	const event = await getEventById(id);
 
+	const totalSeats = event.seats;
+
 	const boardGameIds = event.boardGamesSuggestions.map(
 		(suggestion: { id: string }) => suggestion.id
 	);
+
+	const existingBoardGameSuggestions =
+		event.boardGamesSuggestionsByAttendee.map(
+			(suggestion: { id: string }) => suggestion.id
+		);
+
+	const currentAttendeesCount =
+		event.attendeeCount + event.guestAttendeesCount + event.guestsFromAttendee;
 
 	const relatedEvents = await getRelatedEventsByCategory({
 		categoryId: event.category._id,
@@ -87,12 +97,14 @@ const EventDetails = async ({
 							<div className="p-regular-20 flex items-center gap-3">
 								<GoPeople className="w-6 h-6" />
 								<p className="p-medium-16 lg:p-regular-20">
-									{event.attendeeCount +
-										event.guestAttendeesCount +
-										event.guestsFromAttendee}
-									/{event.seats}
+									{currentAttendeesCount} /{event.seats}
 								</p>
-								<AttendButton event={event} attendeeDetails={attendeeDetails} />
+								<AttendButton
+									event={event}
+									attendeeDetails={attendeeDetails}
+									existingBoardGameSuggestions={existingBoardGameSuggestions}
+									seats={totalSeats}
+								/>
 							</div>
 							<div className="flex gap-2 md:gap-3">
 								<HiOutlineCalendar className="w-6 h-6" />

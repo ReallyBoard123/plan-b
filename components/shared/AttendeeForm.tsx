@@ -23,7 +23,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useEffect, useState } from "react";
-import { attendeeFormSchema } from "@/lib/validator";
 import {
 	BoardGameSuggestion,
 	addAttendeeToEvent,
@@ -44,7 +43,7 @@ interface AttendeeDetails extends AttendeeFormValues {
 	_id: string;
 }
 
-const schema = z.object({
+const formSchema = z.object({
 	guests: z.number(),
 	boardGames: z.array(
 		z.object({
@@ -57,6 +56,8 @@ const schema = z.object({
 type AttendeeFormProps = {
 	eventId: string;
 	userId: string;
+	existingBoardGameSuggestions: string[];
+	seats: number;
 	type: "Add" | "Update";
 	attendeeDetails?: {
 		_id: string;
@@ -70,16 +71,50 @@ const AttendeeForm = ({
 	userId,
 	type,
 	attendeeDetails,
+	existingBoardGameSuggestions,
+	seats,
 }: AttendeeFormProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 
 	const form = useForm({
-		resolver: zodResolver(schema),
+		resolver: zodResolver(formSchema),
 		defaultValues: {
 			guests: attendeeDetails?.guests ?? 0,
 			boardGames: attendeeDetails?.boardGames ?? [],
 		},
 	});
+
+	const { handleSubmit, setError, clearErrors, watch } = form;
+	const guests = watch("guests");
+	const boardGames = watch("boardGames");
+
+	useEffect(() => {
+		const duplicate = boardGames.some((bg) =>
+			existingBoardGameSuggestions.includes(bg.id)
+		);
+		if (duplicate) {
+			setError("boardGames", {
+				type: "custom",
+				message: "Boardgame suggestion already exists!",
+			});
+		} else {
+			clearErrors("boardGames");
+		}
+	}, [boardGames, existingBoardGameSuggestions, setError, clearErrors]);
+
+	useEffect(() => {
+		const maxGuests = seats - (attendeeDetails?.guests ?? 0) - 1; // Subtracting 1 for the attendee themselves
+		if (guests > maxGuests) {
+			setError("guests", {
+				type: "custom",
+				message: `You can bring a total of maximum ${maxGuests} guest${
+					maxGuests === 1 ? "" : "s"
+				}.`,
+			});
+		} else {
+			clearErrors("guests");
+		}
+	}, [guests, seats, setError, clearErrors]);
 
 	const onSubmit = async (values: AttendeeFormValues) => {
 		if (type === "Add") {
@@ -165,7 +200,9 @@ const AttendeeForm = ({
 											onGameSelect={(games) => field.onChange(games)}
 										/>
 									</FormControl>
-									<FormMessage />
+									<FormMessage>
+										{form.formState.errors.boardGames?.message}
+									</FormMessage>
 								</FormItem>
 							)}
 						/>

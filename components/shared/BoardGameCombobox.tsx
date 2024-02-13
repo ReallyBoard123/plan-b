@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from "react";
 
 type BoardGameComboboxProps = {
 	selectedGames: SearchGameResult[];
-	onGameSelect: (selectedGame: SearchGameResult[]) => void; // Adjust according to how you manage state
+	onGameSelect: (selectedGame: SearchGameResult[]) => void;
 };
 
 export function BoardGameCombobox({
@@ -63,10 +63,14 @@ export function BoardGameCombobox({
 			className="relative overflow-visible bg-transparent w-full"
 		>
 			<div className="input-field flex items-center">
-				<div className="flex flex-wrap gap-1">
+				<div className="flex flex-wrap gap-1 items-center">
 					{selectedGames.map((game) => (
-						<Badge key={game.id} variant="secondary">
-							{game.name}
+						<Badge
+							key={game.id}
+							variant="secondary"
+							className="max-w-xs sm:max-w-[100px] flex items-center"
+						>
+							<span className="truncate self-center">{game.name}</span>
 							<button onClick={() => handleUnselect(game)} className="ml-1">
 								<X className="h-3 w-3" />
 							</button>
@@ -77,7 +81,7 @@ export function BoardGameCombobox({
 						value={inputValue}
 						onChange={(e) => setInputValue(e.target.value)}
 						onFocus={() => setOpen(true)}
-						placeholder="Suggest boardgames"
+						placeholder={selectedGames.length > 0 ? "" : "Suggest boardgames"}
 						className="outline-none bg-transparent  placeholder:text-grey-500 "
 					/>
 				</div>

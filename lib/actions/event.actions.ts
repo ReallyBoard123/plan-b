@@ -204,27 +204,34 @@ export async function getRelatedEventsByCategory({
 	}
 }
 
-// UPDATE PARTICIPATION
-export async function updateEventParticipation({
-	eventId,
-	updatePayload,
+// GET EVENTS BY ATTENDEE
+export async function getEventsByAttendee({
+	userId,
+	limit = 6,
+	page = 1,
 }: {
-	eventId: string;
-	updatePayload: any;
+	userId: string;
+	limit?: number;
+	page?: number;
 }) {
 	try {
 		await connectToDatabase();
 
-		const eventToUpdate = await Event.findById(eventId);
-		if (!eventToUpdate) {
-			throw new Error("Event not found");
-		}
+		const skipAmount = (page - 1) * limit;
 
-		const updatedEvent = await Event.findByIdAndUpdate(eventId, updatePayload, {
-			new: true,
-		});
+		const conditions = { attendees: userId };
+		const eventsQuery = Event.find(conditions)
+			.sort({ createdAt: "desc" })
+			.skip(skipAmount)
+			.limit(limit);
 
-		return JSON.parse(JSON.stringify(updatedEvent));
+		const events = await populateEvent(eventsQuery);
+		const eventsCount = await Event.countDocuments(conditions);
+
+		return {
+			data: JSON.parse(JSON.stringify(events)),
+			totalPages: Math.ceil(eventsCount / limit),
+		};
 	} catch (error) {
 		handleError(error);
 	}

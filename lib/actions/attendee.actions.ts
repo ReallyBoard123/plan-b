@@ -2,8 +2,9 @@
 
 import { connectToDatabase } from "@/lib/database";
 import { Attendee } from "@/lib/database/models/attendee.model";
-import { Event } from "@/lib/database/models/event.model";
+import { Event, IEvent } from "@/lib/database/models/event.model";
 import { handleError } from "@/lib/utils";
+import { GetEventsByUserParams } from "@/types";
 
 export interface BoardGameSuggestion {
 	id: string;
@@ -57,11 +58,6 @@ export async function addAttendeeToEvent({
 	}
 }
 
-// Find the attendee details by accessing 1. the event id (inside that we will find the userId of the attendee) and 2. the attendee details that is tied to this event with the userId. We need this information, so that we can update it? Let us do in two functions?
-
-//function 1: Find the attendee details by accessing the event id
-
-// Function to fetch attendee details
 export async function fetchAttendeeDetails(eventId: string, userId: string) {
 	try {
 		await connectToDatabase();

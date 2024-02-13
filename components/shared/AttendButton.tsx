@@ -20,15 +20,16 @@ interface AttendeeDetails {
 interface AttendButtonProps {
 	event: IEvent;
 	attendeeDetails?: AttendeeDetails;
+	existingBoardGameSuggestions: string[];
+	seats: number;
 }
 
 const AttendButton = ({
 	event,
 	attendeeDetails,
-}: {
-	event: IEvent;
-	attendeeDetails?: AttendeeDetails;
-}) => {
+	existingBoardGameSuggestions,
+	seats,
+}: AttendButtonProps) => {
 	const { user } = useUser();
 	const userId = user?.publicMetadata.userId as string;
 	const router = useRouter();
@@ -56,6 +57,8 @@ const AttendButton = ({
 							userId={userId}
 							type={attendeeDetails ? "Update" : "Add"}
 							attendeeDetails={attendeeDetails}
+							existingBoardGameSuggestions={existingBoardGameSuggestions}
+							seats={seats}
 						/>
 					</SignedIn>
 				</>

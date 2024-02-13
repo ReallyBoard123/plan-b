@@ -41,6 +41,7 @@ const eventSchema = new Schema<IEvent>({
 });
 
 export interface IEvent extends Document {
+	event: any;
 	title: string;
 	description?: string;
 	location?: string;
