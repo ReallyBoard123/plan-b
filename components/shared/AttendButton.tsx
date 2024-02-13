@@ -36,8 +36,6 @@ const AttendButton = ({
 
 	const hasEventFinished = new Date(event.dateTime) < new Date();
 
-	const attendeeId = userId;
-
 	return (
 		<div className="flex items-center gap-3">
 			{hasEventFinished ? (

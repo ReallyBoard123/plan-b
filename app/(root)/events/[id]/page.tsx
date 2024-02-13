@@ -44,19 +44,10 @@ const EventDetails = async ({
 		page: searchParams.page as string,
 	});
 
-	console.log("page event id", id);
-	console.log("userId", userId);
-
 	const isOrganizer = event.organizer._id === userId;
-	console.log("isOrganizer", isOrganizer);
 
 	const isAttending = event.attendees.includes(userId);
-	console.log("isAttending", isAttending);
 
-	console.log(
-		"total guest count",
-		event.guestAttendeesCount + event.attendeeCount + event.guestsFromAttendee
-	);
 	let attendeeDetails = null;
 
 	if (isAttending) {
@@ -99,12 +90,15 @@ const EventDetails = async ({
 								<p className="p-medium-16 lg:p-regular-20">
 									{currentAttendeesCount} /{event.seats}
 								</p>
-								<AttendButton
-									event={event}
-									attendeeDetails={attendeeDetails}
-									existingBoardGameSuggestions={existingBoardGameSuggestions}
-									seats={totalSeats}
-								/>
+
+								{isOrganizer ? null : (
+									<AttendButton
+										event={event}
+										attendeeDetails={attendeeDetails}
+										existingBoardGameSuggestions={existingBoardGameSuggestions}
+										seats={totalSeats}
+									/>
+								)}
 							</div>
 							<div className="flex gap-2 md:gap-3">
 								<HiOutlineCalendar className="w-6 h-6" />

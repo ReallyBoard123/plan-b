@@ -4,7 +4,6 @@ import { connectToDatabase } from "@/lib/database";
 import { Attendee } from "@/lib/database/models/attendee.model";
 import { Event, IEvent } from "@/lib/database/models/event.model";
 import { handleError } from "@/lib/utils";
-import { GetEventsByUserParams } from "@/types";
 
 export interface BoardGameSuggestion {
 	id: string;
@@ -42,7 +41,6 @@ export async function addAttendeeToEvent({
 			boardGames,
 		});
 
-		// Update the Event document to include this new attendee and their board game suggestions
 		await Event.findByIdAndUpdate(eventId, {
 			$push: {
 				attendees: userId,
@@ -69,7 +67,6 @@ export async function fetchAttendeeDetails(eventId: string, userId: string) {
 			throw new Error("Attendee not found");
 		}
 
-		// Optionally, convert the document to a JSON object if needed
 		return JSON.parse(JSON.stringify(attendeeDetails));
 	} catch (error) {
 		handleError(error);

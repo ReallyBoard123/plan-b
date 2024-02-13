@@ -3,7 +3,6 @@ import { formatDateTime } from "@/lib/utils";
 import { auth } from "@clerk/nextjs";
 import { MdOutlineEdit } from "react-icons/md";
 import { TbMeeple } from "react-icons/tb";
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { DeleteConfirmation } from "./DeleteConfirmation";

@@ -21,7 +21,6 @@ const parseXmlToJson = async (xml: string) => {
 	}
 };
 
-// Function to search board games by name with advanced logic
 export const searchBoardGamesByName = async (
 	query: string
 ): Promise<SearchGameResult[]> => {
@@ -40,19 +39,19 @@ export const searchBoardGamesByName = async (
 			name: game.name?.value ?? "Unnamed Game",
 		}));
 
-		// Initialize Fuse with the games list and configure it for fuzzy searching
+		// Initialize Fuse.js
 		const options = {
 			includeScore: true,
 			isCaseSensitive: false,
 			findAllMatches: true,
 			threshold: 0.2, // Lower threshold to make search stricter
 			location: 0,
-			distance: 100, // Might need adjustment based on your data
+			distance: 100,
 			tokenize: true,
 			matchAllTokens: true,
 			tokenSeparator: /[\s:]+/, // Split on whitespace and colons
 			keys: ["name"],
-			minMatchCharLength: 1, // Consider lowering this for partial matches
+			minMatchCharLength: 1, //lower this for partial matches
 		};
 
 		// Use Fuse to search with the preprocessed query

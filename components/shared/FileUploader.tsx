@@ -1,4 +1,3 @@
-// FileUploader.tsx
 "use client";
 
 import { useCallback, Dispatch, SetStateAction } from "react";

@@ -48,7 +48,6 @@ export function BoardGameCombobox({
 	const handleSelect = (game: SearchGameResult) => {
 		if (!selectedGames.some((selectedGame) => selectedGame.id === game.id)) {
 			const updatedGames = [...selectedGames, game];
-			console.log("Selected Games:", updatedGames);
 			onGameSelect(updatedGames);
 			setInputValue("");
 			setOpen(false);

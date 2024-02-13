@@ -39,10 +39,6 @@ interface AttendeeFormValues {
 	boardGames: BoardGameSuggestion[];
 }
 
-interface AttendeeDetails extends AttendeeFormValues {
-	_id: string;
-}
-
 const formSchema = z.object({
 	guests: z.number(),
 	boardGames: z.array(
