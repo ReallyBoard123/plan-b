@@ -108,31 +108,36 @@ export async function getAllEvents({
 	limit = 6,
 	page,
 	category,
+	excludeMyEvents = false,
+	userId,
 }: GetAllEventsParams) {
 	try {
 		await connectToDatabase();
 
 		const titleCondition = query
 			? { title: { $regex: query, $options: "i" } }
-			: {};
+			: null;
 		const categoryCondition = category
 			? await getCategoryByName(category)
 			: null;
-		const conditions = {
-			$and: [
-				titleCondition,
-				categoryCondition ? { category: categoryCondition._id } : {},
-			],
-		};
+
+		let conditions: any[] = [];
+
+		if (titleCondition) conditions.push(titleCondition);
+		if (categoryCondition) conditions.push({ category: categoryCondition._id });
+		if (excludeMyEvents && userId)
+			conditions.push({ organizer: { $ne: userId } });
+
+		const queryConditions = conditions.length > 0 ? { $and: conditions } : {};
 
 		const skipAmount = (Number(page) - 1) * limit;
-		const eventsQuery = Event.find(conditions)
+		const eventsQuery = Event.find(queryConditions)
 			.sort({ createdAt: "desc" })
 			.skip(skipAmount)
 			.limit(limit);
 
 		const events = await populateEvent(eventsQuery);
-		const eventsCount = await Event.countDocuments(conditions);
+		const eventsCount = await Event.countDocuments(queryConditions);
 
 		return {
 			data: JSON.parse(JSON.stringify(events)),
@@ -153,6 +158,36 @@ export async function getEventsByUser({
 		await connectToDatabase();
 
 		const conditions = { organizer: userId };
+		const skipAmount = (page - 1) * limit;
+
+		const eventsQuery = Event.find(conditions)
+			.sort({ createdAt: "desc" })
+			.skip(skipAmount)
+			.limit(limit);
+
+		const events = await populateEvent(eventsQuery);
+		const eventsCount = await Event.countDocuments(conditions);
+
+		return {
+			data: JSON.parse(JSON.stringify(events)),
+			totalPages: Math.ceil(eventsCount / limit),
+		};
+	} catch (error) {
+		handleError(error);
+	}
+}
+
+//GET ALL EVENTS THAT ARE NOT BY THE USER
+
+export async function getEventsByNotUser({
+	userId,
+	limit = 6,
+	page,
+}: GetEventsByUserParams) {
+	try {
+		await connectToDatabase();
+
+		const conditions = { organizer: { $ne: userId } };
 		const skipAmount = (page - 1) * limit;
 
 		const eventsQuery = Event.find(conditions)

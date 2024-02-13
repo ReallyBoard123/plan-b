@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
 	getEventsByUser,
 	getEventsByAttendee,
+	getEventsByNotUser,
 } from "@/lib/actions/event.actions";
 
 import { SearchParamProps } from "@/types";

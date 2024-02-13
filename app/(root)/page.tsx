@@ -6,18 +6,27 @@ import { SearchParamProps } from "@/types";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import Search from "@/components/shared/Search";
 import CategoryFilter from "@/components/shared/CategoryFilter";
+import NotMyEventsCheckbox from "@/components/shared/NotMyEventsBox";
+import { auth } from "@clerk/nextjs";
 
 export default async function Home({ searchParams }: SearchParamProps) {
 	const page = Number(searchParams?.page) || 1;
 	const searchText = (searchParams?.query as string) || "";
 	const category = (searchParams?.category as string) || "";
+	const excludeMyEvents = searchParams?.excludeMyEvents === "true";
+
+	const { sessionClaims } = auth();
+	const userId = sessionClaims?.userId as string;
 
 	const events = await getAllEvents({
 		query: searchText,
 		category,
 		page,
 		limit: 6,
+		excludeMyEvents,
+		userId: userId || undefined,
 	});
+
 	return (
 		<>
 			<section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
@@ -55,6 +64,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
 				<div className="flex w-full flex-col gap-5 md:flex-row">
 					<Search />
 					<CategoryFilter />
+					<NotMyEventsCheckbox />
 				</div>
 				<Collection
 					data={events?.data}
