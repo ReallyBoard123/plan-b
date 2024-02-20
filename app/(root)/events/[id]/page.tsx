@@ -46,8 +46,6 @@ const EventDetails = async ({
 
 	const page = Number(searchParams.page) >= 1 ? Number(searchParams.page) : 1;
 
-	console.log(relatedEvents);
-
 	const isOrganizer = event.organizer._id === userId;
 
 	const isAttending = event.attendees.includes(userId);
