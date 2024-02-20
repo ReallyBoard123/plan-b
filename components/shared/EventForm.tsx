@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { HiOutlineMapPin } from "react-icons/hi2";
 import { HiOutlineCalendar } from "react-icons/hi";
+import { toast } from "sonner";
 import {
 	Form,
 	FormControl,
@@ -18,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { eventFormSchema } from "@/lib/validator";
 import * as z from "zod";
 import { eventDefaultValues } from "@/constants";
+import { GiMeepleCircle } from "react-icons/gi";
 import Dropdown from "./Dropdown";
 import { Textarea } from "@/components/ui/textarea";
 import { FileUploader } from "./FileUploader";
@@ -30,6 +32,7 @@ import { createEvent, updateEvent } from "@/lib/actions/event.actions";
 
 import { BoardGameCombobox } from "./BoardGameCombobox";
 import { IEvent } from "@/lib/database/models/event.model";
+import { formatDateTime } from "@/lib/utils";
 
 type EventFormProps = {
 	userId: string;
@@ -82,6 +85,10 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 				});
 
 				if (newEvent) {
+					const { dateOnly, timeOnly } = formatDateTime(values.dateTime);
+					toast("I wish you victory!", {
+						description: `${values.title} on ${dateOnly} at ${timeOnly}`,
+					});
 					form.reset();
 					router.push(`/events/${newEvent._id}`);
 				}
@@ -119,6 +126,12 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
 				onSubmit={form.handleSubmit(onSubmit)}
 				className="flex flex-col gap-5"
 			>
+				{form.formState.isSubmitting && (
+					<div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+						<GiMeepleCircle className="animate-spin-slow h-8 w-8 text-white" />
+					</div>
+				)}
+
 				<FormField
 					control={form.control}
 					name="title"

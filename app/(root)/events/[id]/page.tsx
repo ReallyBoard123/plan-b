@@ -44,6 +44,10 @@ const EventDetails = async ({
 		page: searchParams.page as string,
 	});
 
+	const page = Number(searchParams.page) >= 1 ? Number(searchParams.page) : 1;
+
+	console.log(relatedEvents);
+
 	const isOrganizer = event.organizer._id === userId;
 
 	const isAttending = event.attendees.includes(userId);
@@ -146,7 +150,7 @@ const EventDetails = async ({
 					emptyStateSubtext="Come back later"
 					collectionType="All_Events"
 					limit={3}
-					page={searchParams.page as string}
+					page={page.toString()}
 					totalPages={relatedEvents?.totalPages}
 				/>
 			</section>
